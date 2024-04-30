@@ -1,0 +1,27 @@
+import RPi.GPIO as GPIO
+import time
+
+# Set GPIO mode (BCM or BOARD)
+GPIO.setmode(GPIO.BCM)
+
+# Set the GPIO pin connected to the relay
+relay_pin = 17
+
+# Setup the GPIO pin as output
+GPIO.setup(relay_pin, GPIO.OUT)
+
+try:
+    while True:
+        # Turn the relay ON (close the circuit)
+        GPIO.output(relay_pin, GPIO.HIGH)
+        print("Relay ON")
+        time.sleep(2)  # Wait for 2 seconds
+
+        # Turn the relay OFF (open the circuit)
+        GPIO.output(relay_pin, GPIO.LOW)
+        print("Relay OFF")
+        time.sleep(2)  # Wait for 2 seconds
+
+except KeyboardInterrupt:
+    # Cleanup GPIO
+    GPIO.cleanup()
