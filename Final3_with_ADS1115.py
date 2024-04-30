@@ -7,7 +7,6 @@ import board
 import busio
 import adafruit_ads1x15.ads1115 as ADS
 from adafruit_ads1x15.analog_in import AnalogIn
-import Adafruit_DHT
 
 GPIO.setmode(GPIO.BCM)
 
@@ -55,13 +54,19 @@ def blynk_connected():
     time.sleep(2)
 
 # Function to control relay based on soil moisture
+# Function to control relay based on soil moisture
 def control_relay(soil_moisture):
-    if soil_moisture > 60:
-        print("Soil moisture is high. Turning off relay.")
-        GPIO.output(RELAY_PIN, GPIO.LOW)  # Turn off the relay
-    else:
-        print("Soil moisture is low. Turning on relay.")
+    if soil_moisture > 30:
+        print("Soil moisture is high. Turning on relay.")
         GPIO.output(RELAY_PIN, GPIO.HIGH)  # Turn on the relay
+        # Update Blynk label to show "Pump On"
+        blynk.virtual_write(4, "Pump On")
+    else:
+        print("Soil moisture is low. Turning off relay.")
+        GPIO.output(RELAY_PIN, GPIO.LOW)  # Turn off the relay
+        # Update Blynk label to show "Pump Off"
+        blynk.virtual_write(4, "Pump Off")
+
 
 # Function to send notification to Blynk app
 def send_notification():
@@ -101,8 +106,8 @@ def myData():
     print("Soil Moisture:", soil_moisture)
 
     # Send data to Blynk app
-    blynk.virtual_write(0, humidity)
-    blynk.virtual_write(1, temperature)
+    blynk.virtual_write(1, humidity)
+    blynk.virtual_write(0, temperature)
     blynk.virtual_write(2, distance)
     blynk.virtual_write(3, soil_moisture)
     print("Values sent to New Blynk Server!")
@@ -112,7 +117,7 @@ def myData():
     
     # Turn on buzzer and send notification if distance exceeds 10cm
     if distance > 10:
-        print("Distance is greater than 10cm. Turning on buzzer and sending notification.")
+        print("Distance is greater than 10cm. Turning on buzzer.")
         GPIO.output(BUZZER_PIN, GPIO.HIGH)  # Turn on the buzzer
         # Send notification using log_event
         send_notification()
