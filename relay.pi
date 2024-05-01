@@ -1,27 +1,26 @@
-import RPi.GPIO as GPIO
+from gpiozero import OutputDevice
 import time
 
-# Set GPIO mode (BCM or BOARD)
-GPIO.setmode(GPIO.BCM)
+# Define the GPIO pin connected to the relay
+RELAY_PIN = 18  # Example GPIO pin number
 
-# Set the GPIO pin connected to the relay
-relay_pin = 17
+# Initialize the relay
+relay = OutputDevice(RELAY_PIN, active_high=False, initial_value=False)
 
-# Setup the GPIO pin as output
-GPIO.setup(relay_pin, GPIO.OUT)
+# Function to control the relay based on a condition
+def control_relay(value):
+    if value < 10:
+        relay.on()  # Turn on the relay
+    else:
+        relay.off()  # Turn off the relay
 
-try:
-    while True:
-        # Turn the relay ON (close the circuit)
-        GPIO.output(relay_pin, GPIO.HIGH)
-        print("Relay ON")
-        time.sleep(2)  # Wait for 2 seconds
+# Main loop
+while True:
+    # Get input value (replace this with actual input)
+    input_value = 5  # Example input value
 
-        # Turn the relay OFF (open the circuit)
-        GPIO.output(relay_pin, GPIO.LOW)
-        print("Relay OFF")
-        time.sleep(2)  # Wait for 2 seconds
+    # Call the function to control the relay based on the input value
+    control_relay(input_value)
 
-except KeyboardInterrupt:
-    # Cleanup GPIO
-    GPIO.cleanup()
+    # Optional: Add a delay to avoid busy-waiting
+    time.sleep(0.1)  # Adjust the delay time as needed
